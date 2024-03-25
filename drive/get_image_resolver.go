@@ -1,4 +1,4 @@
-package dive
+package drive
 
 import (
 	"fmt"

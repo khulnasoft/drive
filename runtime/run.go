@@ -121,7 +121,7 @@ func Run(options Options) {
 	var exitCode int
 	var events = make(eventChannel)
 
-	imageResolver, err := dive.GetImageResolver(options.Source)
+	imageResolver, err := drive.GetImageResolver(options.Source)
 	if err != nil {
 		message := "cannot determine image provider"
 		logrus.Error(message)

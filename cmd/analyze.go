@@ -41,12 +41,12 @@ func doAnalyzeCmd(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	var sourceType dive.ImageSource
+	var sourceType drive.ImageSource
 	var imageStr string
 
-	sourceType, imageStr = dive.DeriveImageSource(userImage)
+	sourceType, imageStr = drive.DeriveImageSource(userImage)
 
-	if sourceType == dive.SourceUnknown {
+	if sourceType == drive.SourceUnknown {
 		sourceStr := viper.GetString("source")
 		sourceType = drive.ParseImageSource(sourceStr)
 		if sourceType == drive.SourceUnknown {

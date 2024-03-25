@@ -30,5 +30,5 @@ func SetVersion(v *Version) {
 }
 
 func printVersion(cmd *cobra.Command, args []string) {
-	fmt.Printf("dive %s\n", version.Version)
+	fmt.Printf("drive %s\n", version.Version)
 }

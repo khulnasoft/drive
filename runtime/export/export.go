@@ -3,7 +3,7 @@ package export
 import (
 	"encoding/json"
 
-	diveImage "github.com/khulnasoft/drive/drive/image"
+	driveImage "github.com/khulnasoft/drive/drive/image"
 )
 
 type export struct {

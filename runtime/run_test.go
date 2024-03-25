@@ -100,14 +100,14 @@ func TestRun(t *testing.T) {
 			resolver: &defaultResolver{},
 			options: Options{
 				Ci:         false,
-				Image:      "dive-example",
-				Source:     dive.SourceDockerEngine,
+				Image:      "drive-example",
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   nil,
 				BuildArgs:  nil,
 			},
 			events: []testEvent{
-				{stdout: "Image Source: docker://dive-example", stderr: "", errorOnExit: false, errMessage: ""},
+				{stdout: "Image Source: docker://drive-example", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Fetching image... (this can take a while for large images)", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Analyzing image...", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Building cache...", stderr: "", errorOnExit: false, errMessage: ""},
@@ -117,15 +117,15 @@ func TestRun(t *testing.T) {
 			resolver: &defaultResolver{},
 			options: Options{
 				Ci:         false,
-				Image:      "dive-example",
-				Source:     dive.SourceDockerEngine,
+				Image:      "drive-example",
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   nil,
 				// note: empty slice is passed
 				BuildArgs: []string{},
 			},
 			events: []testEvent{
-				{stdout: "Image Source: docker://dive-example", stderr: "", errorOnExit: false, errMessage: ""},
+				{stdout: "Image Source: docker://drive-example", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Fetching image... (this can take a while for large images)", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Analyzing image...", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Building cache...", stderr: "", errorOnExit: false, errMessage: ""},
@@ -135,8 +135,8 @@ func TestRun(t *testing.T) {
 			resolver: &defaultResolver{},
 			options: Options{
 				Ci:         false,
-				Image:      "dive-example",
-				Source:     dive.SourceDockerEngine,
+				Image:      "drive-example",
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   nil,
 				BuildArgs:  []string{"an-option"},
@@ -151,14 +151,14 @@ func TestRun(t *testing.T) {
 			resolver: &failedFetchResolver{},
 			options: Options{
 				Ci:         false,
-				Image:      "dive-example",
-				Source:     dive.SourceDockerEngine,
+				Image:      "drive-example",
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   nil,
 				BuildArgs:  nil,
 			},
 			events: []testEvent{
-				{stdout: "Image Source: docker://dive-example", stderr: "", errorOnExit: false, errMessage: ""},
+				{stdout: "Image Source: docker://drive-example", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "Fetching image... (this can take a while for large images)", stderr: "", errorOnExit: false, errMessage: ""},
 				{stdout: "", stderr: "cannot fetch image", errorOnExit: true, errMessage: "some fetch failure"},
 			},
@@ -168,7 +168,7 @@ func TestRun(t *testing.T) {
 			options: Options{
 				Ci:         false,
 				Image:      "doesn't-matter",
-				Source:     dive.SourceDockerEngine,
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   nil,
 				BuildArgs:  []string{"an-option"},
@@ -183,7 +183,7 @@ func TestRun(t *testing.T) {
 			options: Options{
 				Ci:         true,
 				Image:      "doesn't-matter",
-				Source:     dive.SourceDockerEngine,
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   configureCi(),
 				BuildArgs:  []string{"an-option"},
@@ -203,7 +203,7 @@ func TestRun(t *testing.T) {
 			options: Options{
 				Ci:         true,
 				Image:      "doesn't-matter",
-				Source:     dive.SourceDockerEngine,
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "",
 				CiConfig:   viper.New(),
 				BuildArgs:  []string{"an-option"},
@@ -223,7 +223,7 @@ func TestRun(t *testing.T) {
 			options: Options{
 				Ci:         true,
 				Image:      "doesn't-matter",
-				Source:     dive.SourceDockerEngine,
+				Source:     drive.SourceDockerEngine,
 				ExportFile: "some-file.json",
 				CiConfig:   configureCi(),
 				BuildArgs:  []string{"an-option"},
