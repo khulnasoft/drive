@@ -3,7 +3,6 @@
 [![Validations](https://github.com/khulnasoft/drive/actions/workflows/validations.yaml/badge.svg)](https://github.com/khulnasoft/drive/actions/workflows/validations.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/khulnasoft/drive)](https://goreportcard.com/report/github.com/khulnasoft/drive)
 [![License: MIT](https://img.shields.io/badge/License-MIT%202.0-blue.svg)](https://github.com/khulnasoft/drive/blob/main/LICENSE)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=flat)](https://www.paypal.me/khulnasoft)
 
 **A tool for exploring a docker image, layer contents, and discovering ways to shrink the size of your Docker/OCI image.**
 
@@ -44,8 +43,6 @@ Additionally you can run this in your CI pipeline to ensure you're keeping waste
 ```
 CI=true drive <your-image>
 ```
-
-![Image](.data/demo-ci.png)
 
 **This is beta quality!** *Feel free to submit an issue if you want a new feature or find a bug :)*
 
