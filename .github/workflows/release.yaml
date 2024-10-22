@@ -109,7 +109,7 @@ jobs:
         env:
           # for creating the release (requires write access to content)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # for updating brew formula in khulnasoft/homebrew-drive
+          # for updating brew formula in khulnasoft/homebrew-tap
           TAP_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Smoke test published image

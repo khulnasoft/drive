@@ -22,7 +22,7 @@ builds:
 brews:
   - repository:
       owner: khulnasoft
-      name: homebrew-drive
+      name: homebrew-tap
       token: "{{.Env.TAP_GITHUB_TOKEN}}"
     homepage: "https://github.com/khulnasoft/drive/"
     description: "A tool for exploring layers in a docker image"
