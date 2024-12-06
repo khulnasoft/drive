@@ -9,4 +9,3 @@ permit:
 ignore-packages:
   # crypto/internal/boring is released under the openSSL license as a part of the Golang Standard Library
   - crypto/internal/boring
-

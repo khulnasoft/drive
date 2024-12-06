@@ -16,7 +16,7 @@ If a release is found to be problematic, it can be retracted with the following 
 
 - Deleting the GitHub Release
 - Untag the docker images in the `docker.io` registry
-- Revert the brew formula in [`khulnasoft/homebrew-drive`](https://github.com/khulnasoft/homebrew-drive) to point to the previous release
+- Revert the brew formula in [`khulnasoft/homebrew-tap`](https://github.com/khulnasoft/homebrew-tap) to point to the previous release
 - Add a new `retract` entry in the go.mod for the versioned release
 
 **Note**: do not delete release tags from the git repository since there may already be references to the release
