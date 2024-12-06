@@ -35,7 +35,7 @@ archives:
 
 nfpms:
   - license: MIT
-    maintainer: Alex Goodman
+    maintainer: KhulnaSoft, Ltd
     homepage: https://github.com/khulnasoft/drive/
     description: "A tool for exploring layers in a docker image"
     formats:
