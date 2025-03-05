@@ -12,7 +12,7 @@ GORELEASER_VERSION = v1.19.1
 GOSIMPORTS_VERSION = v0.3.8
 CHRONICLE_VERSION = v0.6.0
 GLOW_VERSION = v1.5.0
-DOCKER_CLI_VERSION = 23.0.6
+DOCKER_CLI_VERSION = 28.0.0
 
 # Command templates #################################
 LINT_CMD = $(TEMP_DIR)/golangci-lint run --tests=false --timeout=2m --config .golangci.yaml
@@ -119,7 +119,7 @@ bootstrap: bootstrap-go bootstrap-tools ## Download and install all go dependenc
 #
 #dev:
 #	docker run -ti --rm -v $(PWD):/app -w /app -v drive-pkg:/go/pkg/ golang:1.13 bash
-#
+
 #build: gofmt
 #	go build -o $(BUILD_PATH)
 

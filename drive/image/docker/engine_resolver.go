@@ -83,7 +83,7 @@ func (r *engineResolver) fetchArchive(id string) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, _, err = dockerClient.ImageInspectWithRaw(ctx, id)
+	_, err = dockerClient.ImageInspect(ctx, id)
 	if err != nil {
 		// don't use the API, the CLI has more informative output
 		fmt.Println("Handler not available locally. Trying to pull '" + id + "'...")
