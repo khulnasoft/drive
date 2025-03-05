@@ -5,6 +5,10 @@ PRODUCTION_REGISTRY = docker.io
 SHELL = /bin/bash -o pipefail
 TEST_IMAGE = busybox:latest
 
+# Custom configuration #################################
+CONFIG_DIR = ./.config
+CONFIG_FILE = config.yaml
+
 # Tool versions #################################
 GOLANG_CI_VERSION = v1.64.5
 GOLICENSES = v5.0.1
@@ -62,6 +66,10 @@ ifndef SNAPSHOT_DIR
 	$(error SNAPSHOT_DIR is not set)
 endif
 
+ifndef CONFIG_DIR
+	$(error CONFIG_DIR is not set)
+endif
+
 define title
     @printf '$(TITLE)$(1)$(RESET)\n'
 endef
@@ -77,8 +85,16 @@ test: unit ## Run all tests (currently unit and cli tests)
 $(TEMP_DIR):
 	mkdir -p $(TEMP_DIR)
 
+$(CONFIG_DIR):
+	mkdir -p $(CONFIG_DIR)
+
 
 ## Bootstrapping targets #################################
+
+.PHONY: verify-dependencies
+verify-dependencies:
+	@echo "Verifying tool checksums..."
+	# Add checksum verification logic
 
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMP_DIR)
@@ -95,8 +111,17 @@ bootstrap-go:
 	$(call title,Bootstrapping go dependencies)
 	go mod download
 
+.PHONY: bootstrap-config
+bootstrap-config: $(CONFIG_DIR)
+	$(call title,Bootstrapping configuration)
+	@if [ ! -f $(CONFIG_DIR)/$(CONFIG_FILE) ]; then \
+		echo "Creating default configuration file"; \
+		echo "# Default configuration" > $(CONFIG_DIR)/$(CONFIG_FILE); \
+	fi
+
 .PHONY: bootstrap
-bootstrap: bootstrap-go bootstrap-tools ## Download and install all go dependencies (+ prep tooling in the ./tmp dir)
+
+bootstrap: bootstrap-go bootstrap-tools bootstrap-config ## Download and install all go dependencies (+ prep tooling in the ./tmp dir)
 
 
 ## Development targets ###################################
@@ -300,7 +325,7 @@ ci-check:
 ## Cleanup targets #################################
 
 .PHONY: clean
-clean: clean-dist clean-snapshot  ## Remove previous builds, result reports, and test cache
+clean: clean-dist clean-snapshot clean-config ## Remove previous builds, result reports, and test cache
 
 .PHONY: clean-snapshot
 clean-snapshot:
@@ -314,10 +339,13 @@ clean-dist: clean-changelog
 clean-changelog:
 	rm -f $(CHANGELOG) VERSION
 
+.PHONY: clean-config
+clean-config:
+	rm -rf $(CONFIG_DIR)
+
 
 ## Halp! #################################
 
 .PHONY: help
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(BOLD)$(CYAN)%-25s$(RESET)%s\n", $$1, $$2}'
-
+	@grep -E '^[a-zA-Z_-]+:.*?## .*' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(BOLD)$(CYAN)%-25s$(RESET)%s\n", $1, $2}'
