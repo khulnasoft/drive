@@ -6,7 +6,7 @@ SHELL = /bin/bash -o pipefail
 TEST_IMAGE = busybox:latest
 
 # Tool versions #################################
-GOLANG_CI_VERSION = v1.52.2
+GOLANG_CI_VERSION = v1.64.5
 GOLICENSES = v5.0.1
 GORELEASER_VERSION = v1.19.1
 GOSIMPORTS_VERSION = v0.3.8
