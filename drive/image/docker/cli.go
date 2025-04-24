@@ -2,19 +2,24 @@ package docker
 
 import (
 	"fmt"
+	"github.com/khulnasoft/drive/internal/log"
+	"github.com/khulnasoft/drive/internal/utils"
 	"os"
 	"os/exec"
-
-	"github.com/khulnasoft/drive/utils"
+	"strings"
 )
 
 // runDockerCmd runs a given Docker command in the current tty
 func runDockerCmd(cmdStr string, args ...string) error {
+
 	if !isDockerClientBinaryAvailable() {
 		return fmt.Errorf("cannot find docker client executable")
 	}
 
 	allArgs := utils.CleanArgs(append([]string{cmdStr}, args...))
+
+	fullCmd := strings.Join(append([]string{"docker"}, allArgs...), " ")
+	log.WithFields("cmd", fullCmd).Trace("executing")
 
 	cmd := exec.Command("docker", allArgs...)
 	cmd.Env = os.Environ()
