@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -13,7 +14,12 @@ func NewResolverFromArchive() *archiveResolver {
 	return &archiveResolver{}
 }
 
-func (r *archiveResolver) Fetch(path string) (*image.Image, error) {
+// Name returns the name of the resolver to display to the user.
+func (r *archiveResolver) Name() string {
+	return "docker-archive"
+}
+
+func (r *archiveResolver) Fetch(ctx context.Context, path string) (*image.Image, error) {
 	reader, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -24,9 +30,13 @@ func (r *archiveResolver) Fetch(path string) (*image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	return img.ToImage()
+	return img.ToImage(path)
 }
 
-func (r *archiveResolver) Build(args []string) (*image.Image, error) {
+func (r *archiveResolver) Build(ctx context.Context, args []string) (*image.Image, error) {
 	return nil, fmt.Errorf("build option not supported for docker archive resolver")
+}
+
+func (r *archiveResolver) Extract(ctx context.Context, id string, l string, p string) error {
+	return fmt.Errorf("not implemented")
 }
