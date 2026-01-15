@@ -1,5 +1,4 @@
 //go:build linux || darwin
-// +build linux darwin
 
 package podman
 
@@ -13,6 +12,7 @@ func buildImageFromCli(buildArgs []string) (string, error) {
 		return "", err
 	}
 	defer os.Remove(iidfile.Name())
+	defer iidfile.Close()
 
 	allArgs := append([]string{"--iidfile", iidfile.Name()}, buildArgs...)
 	err = runPodmanCmd("build", allArgs...)

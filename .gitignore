@@ -1,3 +1,6 @@
+# app configs
+.drive.yaml
+
 # misc
 /.image
 *.log
@@ -12,6 +15,11 @@ VERSION
 /bin
 /.tool-versions
 /.tmp
+/.tool
+/.mise.toml
+/.task
+/go.work
+/go.work.sum
 
 # builds
 /dist

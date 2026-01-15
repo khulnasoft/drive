@@ -1,3 +1,5 @@
+version: 2
+
 release:
   # If set to auto, will mark the release as not ready for production in case there is an indicator for this in the
   # tag e.g. v1.0.0-rc1 .If set to true, will mark the release as not ready for production.
@@ -6,8 +8,14 @@ release:
   # If set to true, will not auto-publish the release. This is done to allow us to review the changelog before publishing.
   draft: false
 
+env:
+  # required to support multi architecture docker builds
+  - DOCKER_CLI_EXPERIMENTAL=enabled
+  - CGO_ENABLED=0
+
 builds:
   - binary: drive
+    dir: ./cmd/drive
     env:
       - CGO_ENABLED=0
     goos:
@@ -17,15 +25,23 @@ builds:
     goarch:
       - amd64
       - arm64
-    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.buildTime={{.Date}}`.
+      - ppc64le
+    ldflags:
+      -w
+      -s
+      -extldflags '-static'
+      -X main.version={{.Version}}
+      -X main.gitCommit={{.Commit}}
+      -X main.buildDate={{.Date}}
+      -X main.gitDescription={{.Summary}}
 
 brews:
   - repository:
-      owner: khulnasoft
-      name: homebrew-tap
+      owner: wagoodman
+      name: homebrew-drive
       token: "{{.Env.TAP_GITHUB_TOKEN}}"
-    homepage: "https://github.com/khulnasoft/drive/"
-    description: "A tool for exploring layers in a docker image"
+    homepage: &project_url "https://github.com/khulnasoft/drive/"
+    description: &description "A tool for exploring layers in a docker image"
 
 archives:
   - format: tar.gz
@@ -35,23 +51,98 @@ archives:
 
 nfpms:
   - license: MIT
-    maintainer: KhulnaSoft, Ltd
-    homepage: https://github.com/khulnasoft/drive/
-    description: "A tool for exploring layers in a docker image"
+    maintainer: KhulnaSoft Ltd
+    homepage: *project_url
+    description: *description
     formats:
       - rpm
       - deb
 
 dockers:
-  -
+  # docker.io amd64
+  - &dockerhub_amd64
+    id: docker-amd64
     ids:
       - drive
-    dockerfile: Dockerfile
-    # todo: on 1.0 remove 'v' prefix
+    use: buildx
+    goarch: amd64
     image_templates:
-      - "khulnasoft/drive:latest"
-      - "khulnasoft/drive:{{ .Tag }}"
-      - "khulnasoft/drive:v{{ .Major }}"
-      - "khulnasoft/drive:v{{ .Major }}.{{ .Minor }}"
+      - docker.io/khulnasoft/drive:latest
+      - docker.io/khulnasoft/drive:v{{.Version}}-amd64
     build_flag_templates:
       - "--build-arg=DOCKER_CLI_VERSION={{.Env.DOCKER_CLI_VERSION}}"
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.description=A tool for exploring layers in a docker image"
+      - "--label=org.opencontainers.image.url={{.GitURL}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.licenses=MIT"
+      - "--label=org.opencontainers.image.authors=KhulnaSoft Ltd <@wagoodman>"
+
+  # docker.io arm64
+  - &dockerhub_arm64
+    id: docker-arm64
+    ids:
+      - drive
+    use: buildx
+    goarch: arm64
+    image_templates:
+      - docker.io/khulnasoft/drive:v{{.Version}}-arm64
+    build_flag_templates:
+      - "--build-arg=DOCKER_CLI_VERSION={{.Env.DOCKER_CLI_VERSION}}"
+      - "--platform=linux/arm64/v8"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.description=A tool for exploring layers in a docker image"
+      - "--label=org.opencontainers.image.url={{.GitURL}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.licenses=MIT"
+      - "--label=org.opencontainers.image.authors=KhulnaSoft Ltd <@wagoodman>"
+
+  # ghcr.io amd64
+  - id: ghcr-amd64
+    <<: *dockerhub_amd64
+    image_templates:
+      - ghcr.io/khulnasoft/drive:v{{.Version}}-amd64
+
+  # ghcr.io arm64
+  - id: ghcr-arm64
+    <<: *dockerhub_arm64
+    image_templates:
+      - ghcr.io/khulnasoft/drive:v{{.Version}}-arm64
+
+docker_manifests:
+  # docker.io manifests
+  - name_template: docker.io/khulnasoft/drive:latest
+    image_templates: &dockerhub_images
+      - docker.io/khulnasoft/drive:v{{.Version}}-amd64
+      - docker.io/khulnasoft/drive:v{{.Version}}-arm64
+
+  - name_template: docker.io/khulnasoft/drive:v{{.Major}}
+    image_templates: *dockerhub_images
+
+  - name_template: docker.io/khulnasoft/drive:v{{.Major}}.{{.Minor}}
+    image_templates: *dockerhub_images
+
+  - name_template: docker.io/khulnasoft/drive:v{{.Version}}
+    image_templates: *dockerhub_images
+
+  # ghcr.io manifests
+  - name_template: ghcr.io/khulnasoft/drive:latest
+    image_templates: &ghcr_images
+      - ghcr.io/khulnasoft/drive:v{{.Version}}-amd64
+      - ghcr.io/khulnasoft/drive:v{{.Version}}-arm64
+
+  - name_template: ghcr.io/khulnasoft/drive:v{{.Major}}
+    image_templates: *ghcr_images
+
+  - name_template: ghcr.io/khulnasoft/drive:v{{.Major}}.{{.Minor}}
+    image_templates: *ghcr_images
+
+  - name_template: ghcr.io/khulnasoft/drive:v{{.Version}}
+    image_templates: *ghcr_images

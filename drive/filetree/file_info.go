@@ -2,24 +2,24 @@ package filetree
 
 import (
 	"archive/tar"
+	"fmt"
 	"io"
 	"os"
 
-	"github.com/cespare/xxhash"
-	"github.com/sirupsen/logrus"
+	"github.com/cespare/xxhash/v2"
 )
 
 // FileInfo contains tar metadata for a specific FileNode
 type FileInfo struct {
-	Path     string
-	TypeFlag byte
-	Linkname string
-	hash     uint64
-	Size     int64
-	Mode     os.FileMode
-	Uid      int
-	Gid      int
-	IsDir    bool
+	Path     string      `json:"path"`
+	TypeFlag byte        `json:"typeFlag"`
+	Linkname string      `json:"linkName"`
+	hash     uint64      //`json:"hash"`
+	Size     int64       `json:"size"`
+	Mode     os.FileMode `json:"fileMode"`
+	Uid      int         `json:"uid"`
+	Gid      int         `json:"gid"`
+	IsDir    bool        `json:"isDir"`
 }
 
 // NewFileInfoFromTarHeader extracts the metadata from a tar header and file contents and generates a new FileInfo object.
@@ -55,7 +55,7 @@ func NewFileInfo(realPath, path string, info os.FileInfo) FileInfo {
 
 		linkName, err = os.Readlink(realPath)
 		if err != nil {
-			logrus.Panic("unable to read link:", realPath, err)
+			panic(fmt.Errorf("unable to read symlink %q: %s", realPath, err))
 		}
 	} else if info.IsDir() {
 		fileType = tar.TypeDir
@@ -69,7 +69,7 @@ func NewFileInfo(realPath, path string, info os.FileInfo) FileInfo {
 	if fileType != tar.TypeDir {
 		file, err := os.Open(realPath)
 		if err != nil {
-			logrus.Panic("unable to read file:", realPath)
+			panic(fmt.Errorf("unable to open file %q: %s", realPath, err))
 		}
 		defer file.Close()
 		hash = getHashFromReader(file)
@@ -127,7 +127,7 @@ func getHashFromReader(reader io.Reader) uint64 {
 	for {
 		n, err := reader.Read(buf)
 		if err != nil && err != io.EOF {
-			logrus.Panic(err)
+			panic(fmt.Errorf("unable to read file: %w", err))
 		}
 		if n == 0 {
 			break
@@ -135,7 +135,7 @@ func getHashFromReader(reader io.Reader) uint64 {
 
 		_, err = h.Write(buf[:n])
 		if err != nil {
-			logrus.Panic(err)
+			panic(fmt.Errorf("unable to write to hash: %w", err))
 		}
 	}
 
